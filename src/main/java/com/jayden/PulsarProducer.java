@@ -21,7 +21,7 @@ public class PulsarProducer {
 
         // async send
         producer.sendAsync("my-async-message".getBytes()).thenAccept(msgId -> {
-            System.out.printf("Message with ID %s successfully sent", msgId);
+            System.out.printf("Message with ID %s successfully sent\n", msgId);
         });
 
         // sync send message with additional items
@@ -40,14 +40,15 @@ public class PulsarProducer {
                 .property("my-other-key", "my-other-value")
                 .sendAsync();
 
-//        producer.close();
+        producer.close();
 
-        producer.closeAsync()
-                .thenRun(() -> System.out.println("Producer closed"))
-                .exceptionally((ex) -> {
-                    System.err.println("Failed to close producer: " + ex);
-                    return null;
-                });
+//        producer.closeAsync()
+//                .thenRun(() -> System.out.println("Producer closed"))
+//                .exceptionally((ex) -> {
+//                    System.err.println("Failed to close producer: " + ex);
+//                    return null;
+//                });
+        client.close();
     }
 
 }

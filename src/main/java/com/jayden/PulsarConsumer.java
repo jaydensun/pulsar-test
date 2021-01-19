@@ -1,9 +1,8 @@
 package com.jayden;
 
-import org.apache.pulsar.client.api.Consumer;
-import org.apache.pulsar.client.api.Message;
-import org.apache.pulsar.client.api.PulsarClient;
-import org.apache.pulsar.client.api.PulsarClientException;
+import org.apache.pulsar.client.api.*;
+
+import java.util.concurrent.TimeUnit;
 
 public class PulsarConsumer {
     public static void main(String[] args) throws PulsarClientException {
@@ -11,18 +10,18 @@ public class PulsarConsumer {
                 .serviceUrl(Config.SERVER)
                 .build();
 
-        Consumer<byte[]> consumer = client.newConsumer()
-                .topic(Config.TOPIC_NAME)
-                .subscriptionName("my-subscription")
-                .subscribe();
+//        Consumer<byte[]> consumer = client.newConsumer()
+//                .topic(Config.TOPIC_NAME)
+//                .subscriptionName("my-subscription")
+//                .subscribe();
 
         // custom consumer
-//        Consumer consumer = client.newConsumer()
-//                .topic("my-topic")
-//                .subscriptionName("my-subscription")
-//                .ackTimeout(10, TimeUnit.SECONDS)
-//                .subscriptionType(SubscriptionType.Exclusive)
-//                .subscribe();
+        Consumer consumer = client.newConsumer()
+                .topic(Config.TOPIC_NAME)
+                .subscriptionName("my-subscription")
+                .ackTimeout(10, TimeUnit.SECONDS)
+                .subscriptionType(SubscriptionType.Shared)
+                .subscribe();
 
         while (true) {
             // Wait for a message
@@ -32,7 +31,7 @@ public class PulsarConsumer {
 
             try {
                 // Do something with the message
-                System.out.printf("Message received: %s", new String(msg.getData()));
+                System.out.printf("Message received: %s\n", new String(msg.getData()));
 
                 // Acknowledge the message so that it can be deleted by the message broker
                 consumer.acknowledge(msg);
